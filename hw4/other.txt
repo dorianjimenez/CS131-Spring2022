@@ -1,0 +1,147 @@
+/* -----------------------------------------------------------------------
+----------------------------------------- */
+/* STATISTICS */
+/* -----------------------------------------------------------------------
+----------------------------------------- */
+
+/*
+
+?- statistics(cpu_time, [SinceStart, SinceLast]).
+
+SinceLast = 8
+SinceStart = 8
+
+?- kenken(
+4,
+[
++(6, [[1|1], [1|2], [2|1]]),
+*(96, [[1|3], [1|4], [2|2], [2|3], [2|4]]),
+-(1, [3|1], [3|2]),
+-(1, [4|1], [4|2]),
++(8, [[3|3], [4|3], [4|4]]),
+*(2, [[3|4]])
+],
+T
+), write(T), nl, fail.
+
+?- statistics(cpu_time, [SinceStart, SinceLast]).
+
+SinceLast = 1
+SinceStart = 9
+
+It takes around <10 milliseconds to run this test case using kenken.
+
+
+
+
+
+
+?- statistics(cpu_time, [SinceStart, SinceLast]).
+
+SinceLast = 7
+SinceStart = 7
+
+
+?- plain_kenken(
+4,
+[
++(6, [[1|1], [1|2], [2|1]]),
+*(96, [[1|3], [1|4], [2|2], [2|3], [2|4]]),
+-(1, [3|1], [3|2]),
+-(1, [4|1], [4|2]),
++(8, [[3|3], [4|3], [4|4]]),
+*(2, [[3|4]])
+],
+T
+), write(T), nl, fail.
+
+?- statistics(cpu_time, [SinceStart, SinceLast]).
+
+SinceLast = 7583
+SinceStart = 7590
+It takes around 7 seconds to run this test case using plain_kenken
+
+plain_kenken is much slower than kenken!
+
+*/
+
+
+
+
+
+/* -----------------------------------------------------------------------
+----------------------------------------- */
+/* NO-OP KENKEN */
+/* -----------------------------------------------------------------------
+----------------------------------------- */
+/*
+
+For no_op_kenken, the interface will look pretty similar to regular 
+kenken.
+It will be no_op_kenken(N, C, T, X), where:
+N is a nonnegative integer specifying the number of cells on each side of 
+the Kenken square.
+C is a list of numeric cage constraints as described below
+T is a list of integers. T must be an NxN grid
+X is a list of symbols (+, -, *, -, =). I explain more below.
+
+Each constraint would be of the format: (S, L)
+L is a nonempty list which represents the squares of the grid,
+S is the result of an operation (addition, multiplication, division, or 
+subtraction) on these squares.
+
+Note: Every cell in the NxN grid MUST be covered included in a constraint.
+Every cell can only be used in ONE constraint.
+
+no_op_kenken_testcase(
+3,
+[
+(15, [[1|1], [1|2], [2|1]]),
+(6, [[1|3], [2|2], [2|3]]),
+(10, [[3|1], [3|2]]),
+(1, [[3|3]])
+],
+T,
+X
+).
+
+
+One possible solution:
+
+T =
+[[4, 6, 3],
+[5, 2, 1],
+[1, 9, 1]]
+
+X = [+, *, +, =]
+
+
+As you can see in this testcase, every single cell is covered in a 
+constraint and is only used in one constraint.
+Also, note that even though a constraint may only cover one cell, the cell 
+is still in a 2D list as this creates
+a more uniform interface.
+
+If there is a possible solution and the input is provided correctly, the 
+user should expect T to be a 2d array
+with each element in the array being the correspond cell in the KenKen 
+board. T should satisfy all the constraints
+that were given. If there are multiple solutions, the user should be able 
+to type ";" and get all the possible
+solutions that will satisfy the constraints given.
+
+If there is a possible solution, the user should also expect X to be a 
+list that holds the operations that were
+performed to get the solution IN THE ORDER OF THE CONSTRAINTS GIVEN. The + 
+means that the cells were added together
+to satisfy that constraint, * means multiplication, etc. The = means that 
+it was a single cell, so there was no
+operation. It is important to note that this is in the order of the 
+constraints, so the length of the constraints
+should equal the length of X.
+
+If there is no possible solution, there is no possible game board that 
+satisfies the constraints given, and the
+output will be no.
+
+*/

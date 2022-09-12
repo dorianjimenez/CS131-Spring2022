@@ -1,0 +1,14 @@
+1. Recursively called the List.mem function to see if an element is in a list. 
+   Tried doing this with List.exists, but found List.mem easier.
+2. Used the subset function to see if both are subsets of each other. 
+3. Recursively called the function, and appended using the cons operator.
+4. Used the set_union function and recursively called itself to do this one. 
+5. Explained in hw1.ml
+6. Used basic recursion again to see if f(x) = x (and so forth)
+7. Used a helper function period as a counter for how many times to apply f to x, then did the same thing as #6 basically.
+8. As long as p x is true, use cons and recursion to add to list.
+9. Basic idea was to go bottom up: figure out which were terminals, then figure out which leads to those, etc.
+   Have an accepted list which is filled with rules which terminate. 
+   Recurse: See which rules terminate and add to accepted list.
+   When done, see if the accepted list has changed. If so, recurse again, if not we're done.
+   Then sort (because it will likely be out of order from original).

@@ -1,0 +1,64 @@
+Unfortunately, I did not have enough time to implement make_parser. However,
+I can explain how I would have implemented this function if I had enough time.
+So, the way my make_matcher function works is it basically does a depth 
+first search through the rules and checks if each one works or not. I can 
+explain how my make_matcher function works at a high level, and then explain
+how I would change/modify this function to implement make_parser. 
+
+I use mutual recursion in my make_matcher function. The ex_ruleset helper 
+function looks at the ruleset of a single symbol (ie Expr). Note that this
+rulset is a list of lists, so we need to use another function to look into 
+a single rule. The ex_rule function does this, and looks at a single rule 
+in the rulset. Note that this is a list of terminal/non-terminals, so we 
+need another function to go another level deeper, and examine if the 
+terminal/non-terminal matches the fragment. The ex_symbol function does
+this, and it looks at a single symbol in the rule to either
+
+    1. If it's a non-terminal, does it match the non-terminal we have 
+       in the fragment? If so, then go to the next symbol we need. Else
+       if it doesn't match, then we are looking at the wrong rule, and
+       we need to back up to a new rule. 
+    2. If it's a terminal, we need to recurse from the beginning and 
+       expand this rule out. 
+
+By doing this and using mutual recursion to recursively call these three 
+functions, I am able to implement make_matcher. 
+
+So, the way I would implement make_parser is to basically keep track of where 
+I went in my search, and figure out which traverses worked and which didn't. 
+The way I'm thinking to do this is via a list, which I would have to add as
+an argument to each of my functions. By adding a list to the arguments, I 
+could do my depth first search, and mark down which paths worked for me and
+add it to the list. By doing this, I could keep a history of where I've been,
+and use that in making the parse_tree itself.
+
+Next, I would take that list and format it into the tree. This would require
+mutual recursion I'm assuming, and by looking at the history and connecting 
+the places I've been. This is basically just reformatting the history list 
+into a tree format, and doesn't actually require any complex tracking of 
+the fragment, acceptors, etc, but would instead just require the history 
+list. 
+
+-----------------------------------------------------------------------------
+
+Let's talk about weaknesses. My implementation of make_matcher is 
+basically a depth first search. This works well with most grammars, however 
+can fail depending on the ordering of the rules.
+
+Ex:
+let impossible_grammar = 
+    (Expr,
+    function 
+        | Expr -> 
+            [[N Num];
+             [T "+"]]
+        | Num -> 
+            [[N Expr];
+             [T "5"]])
+
+Although this is a valid grammar, this would break my make_matcher function, 
+and it would just go in a infinite loop. Since I am checking the rules in
+order, I will go from Expr -> Num -> Expr -> Num -> ... in an infinite loop. 
+So, because the ordering of the rules, I cannot match/parse this grammar,
+even though it is technically a valid grammar.  
+
